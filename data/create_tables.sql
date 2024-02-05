@@ -30,3 +30,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 
+CREATE TABLE IF NOT EXISTS proxies (
+    id INTEGER PRIMARY KEY,
+    proxy TEXT NOT NULL
+);

@@ -62,9 +62,3 @@ async def result1(message: Message, state: FSMContext):
                         'Вы сейчас находитесь в главном меню.</b>', reply_markup=k_menu2())
 
     await state.clear()
-
-
-
-    
-      
-    

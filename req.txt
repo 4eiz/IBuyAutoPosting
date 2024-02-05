@@ -2,3 +2,4 @@ aiogram
 pyrogram
 aiosqlite
 requests
+aiocryptopay

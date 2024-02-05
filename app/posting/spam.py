@@ -64,14 +64,21 @@ async def join_and_send_message(client, link, text, user_id, account):
 async def spamming(client, user_id, text, account):
     while True:
         status = (await users.user_profile(user_id))[9]
-        chats_list = await chats.get_chats(account)
-
         if status == '🔴':
+            try:
+                await client.disconnect()
+            except:
+                pass
             break
-
+        
+        chats_list = await chats.get_chats(account)
         for chat_link in chats_list:
             status = (await users.user_profile(user_id))[9]
             if status == '🔴':
+                try:
+                    await client.disconnect()
+                except:
+                    pass
                 break
             await join_and_send_message(client, chat_link, text, user_id, account)
             delay = (await users.user_profile(user_id))[7]
@@ -79,7 +86,12 @@ async def spamming(client, user_id, text, account):
             for i in range(delay * 60):
                 status = (await users.user_profile(user_id))[9]
                 if status == '🔴':
+                    try:
+                        await client.disconnect()
+                    except:
+                        pass
                     break
+
                 await asyncio.sleep(1)
 
 

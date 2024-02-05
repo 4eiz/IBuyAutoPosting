@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
-from keyboards.client import Menu_callback, k_work_menu, cancel_upl, k_menu
+from keyboards.client import Menu_callback, update_account_method, cancel_upl, k_menu
 from data import chats, users
 from main import bot
 
@@ -17,6 +17,20 @@ class Acc(StatesGroup):
 
 router = Router()
 
+
+text = '''<b>
+Выберите вариант загрузки сессии:
+</b>'''
+
+@router.callback_query(Menu_callback.filter(F.menu == 'upl_acc'))
+async def file(call: CallbackQuery, callback_data: Menu_callback, state: FSMContext):
+    await state.set_state(Acc.session)
+    await call.message.edit_text(text, reply_markup=update_account_method())
+
+
+
+
+
 text_answer = '''
 <b>Внимание!
 Ваш файл должен отличаться названием от других загруженных вами аккаунтов!
@@ -26,7 +40,7 @@ text_answer = '''
 
 
 
-@router.callback_query(Menu_callback.filter(F.menu == 'upl_acc'))
+@router.callback_query(Menu_callback.filter(F.menu == 'upl_acc_method'))
 async def file(call: CallbackQuery, callback_data: Menu_callback, state: FSMContext):
     await state.set_state(Acc.session)
     await call.message.edit_text(text_answer, reply_markup=cancel_upl())

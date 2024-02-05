@@ -198,6 +198,7 @@ def admin_panel():
     kb = [
         [
             types.InlineKeyboardButton(text='💸 Изменить баланс', callback_data=Menu_callback(menu="change_balance").pack()),
+            types.InlineKeyboardButton(text='🌐 Изменить проски', callback_data=Menu_callback(menu="change_proxy").pack()),
         ],
         [
             types.InlineKeyboardButton(text=ButtonTexts.BACK, callback_data=Menu_callback(menu="menu").pack())
@@ -205,6 +206,18 @@ def admin_panel():
     ]
     return types.InlineKeyboardMarkup(inline_keyboard=kb)
 
+
+def update_account_method():
+    kb = [
+        [
+            types.InlineKeyboardButton(text='📤 Загрузить сессию', callback_data=Menu_callback(menu="upl_acc_method").pack()),
+            types.InlineKeyboardButton(text='📱 Войти номеру', callback_data=Menu_callback(menu="upl_acc_method_2").pack()),
+        ],
+        [
+            types.InlineKeyboardButton(text=ButtonTexts.BACK, callback_data=Menu_callback(menu="menu").pack())
+        ]
+    ]
+    return types.InlineKeyboardMarkup(inline_keyboard=kb)
 
 def menu_subscribe():
     kb = [
