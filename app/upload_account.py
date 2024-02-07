@@ -24,8 +24,32 @@ text = '''<b>
 
 @router.callback_query(Menu_callback.filter(F.menu == 'upl_acc'))
 async def file(call: CallbackQuery, callback_data: Menu_callback, state: FSMContext):
-    await state.set_state(Acc.session)
-    await call.message.edit_text(text, reply_markup=update_account_method())
+    record = await users.user_profile(user_id=call.from_user.id)
+    accs = record[2]
+    sub = record[4]
+    answer = False
+
+    if sub == 1 or sub == 2:
+        if accs < 5:
+            answer = True
+    elif sub == 3 or sub == 4:
+        if accs < 10:
+            answer = True
+    elif sub == 5 or sub == 6:
+        print('tut')
+        if accs < 30:
+            answer = True
+    elif sub == 7:
+        if accs < 1:
+            answer = True
+    else:
+        await call.message.answer('<b>🚫 Непредвиденная ошибка!</b>', reply_markup=cancel_upl())
+
+    if answer == True:
+        await state.set_state(Acc.session)
+        await call.message.edit_text(text, reply_markup=update_account_method())
+    else:
+        await call.message.answer('<b>🚫 Вы уже загрузили максимальное количество аккаунтов!</b>', reply_markup=cancel_upl())
 
 
 

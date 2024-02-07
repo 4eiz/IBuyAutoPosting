@@ -8,7 +8,7 @@ from data.users import user_profile
 router = Router()
 
 text2 = '''
-<b>🚫 У Вас нет подписки
+<b>🚫 У вас нет подписки
 
 Чтобы использовать данную функцию бота, оформите подписку.</b>'''
 
@@ -18,9 +18,13 @@ async def work_menu(call: CallbackQuery, callback_data: Menu_callback):
     user_data = await user_profile(user_id)
     sub = user_data[4]
 
-    if sub == 7:
-        await call.message.edit_text(text2)
-    else:
-        text = await message_for_info_user(user_id)
-        markup = await k_work_menu(user_id)
-        await call.message.edit_text(text, reply_markup=markup)
+    # if sub == 7:
+    #     await call.message.edit_text(text2)
+    # else:
+    #     text = await message_for_info_user(user_id)
+    #     markup = await k_work_menu(user_id)
+    #     await call.message.edit_text(text, reply_markup=markup)
+
+    text = await message_for_info_user(user_id)
+    markup = await k_work_menu(user_id)
+    await call.message.edit_text(text, reply_markup=markup)
