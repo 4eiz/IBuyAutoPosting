@@ -27,9 +27,11 @@ async def join_and_send_message(client, link, text, user_id, account):
                 if status == '🟢':
                     await send(error=f'Спамблок: {account}', user_id=user_id)
                     return
+            except UnboundLocalError as e:
+                pass
             except Exception as e:
                 if status == '🟢':
-                    await send(error=f'Ошибка при вступлении в чат: {account}', user_id=user_id)
+                    await send(error=f'Ошибка при вступлении в чат: {e} \n\n {account}:{link}', user_id=user_id)
                     return
 
             amount = send_messages + 1
