@@ -1,4 +1,4 @@
-import os
+import os, random
 
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
@@ -6,8 +6,8 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
 from keyboards.client import Menu_callback, k_work_menu, cancel_upl, k_menu
-from data import chats, users
-from config import API_ID, API_HASH, PROXY
+from data import chats, users, admin
+from config import API_ID, API_HASH
 
 from pyrogram import Client, filters
 from pyrogram.errors import (
@@ -31,6 +31,32 @@ router = Router()
 
 
 
+
+
+def get_random_proxy():
+    proxies = admin.get_proxies()
+    if proxies:
+        proxy = random.choice(proxies)
+    parts = proxy.split("@")
+    login_pass = parts[0].split(":")
+    login = login_pass[0]
+    password = login_pass[1] if len(login_pass) > 1 else ""
+    ip_port = parts[1].split(":")
+    ip = ":".join(ip_port[:-1])
+    port = ip_port[-1]
+
+    PROXY = {
+        "scheme": "socks5",
+        "hostname": ip,
+        "port": int(port),
+        "username": login,
+        "password": password
+    }
+
+    return PROXY
+
+
+
 @router.callback_query(Menu_callback.filter(F.menu == 'upl_acc_method_2'))
 async def update_account(call: CallbackQuery, callback_data: Menu_callback, state: FSMContext):
     await state.set_state(Acc.number)
@@ -51,7 +77,8 @@ async def set_number(message: Message, state: FSMContext):
 
     path = f"app/posting/{user_id}/{filename[:-8]}"
     print('path', path)
-    client = Client(path, API_ID, API_HASH)
+    proxy = get_random_proxy()
+    client = Client(path, API_ID, API_HASH, proxy=proxy)
     await client.connect()
     try:
         code = await client.send_code(phone_number)

@@ -17,10 +17,6 @@ router = Router()
 
 
 
-
-
-
-
 @router.callback_query(Menu_callback.filter(F.menu == 'menu'))
 async def menu(call: CallbackQuery, callback_data: Menu_callback, state: FSMContext):
     try:

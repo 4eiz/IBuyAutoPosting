@@ -6,7 +6,8 @@ import random
 
 
 from data import users, chats
-from config import API_ID, API_HASH, PROXY, API_TOKEN
+from config import API_ID, API_HASH, API_TOKEN
+from app.upload_account2 import get_random_proxy
 
 async def join_and_send_message(client, link, text, user_id, account):
     try:
@@ -27,9 +28,11 @@ async def join_and_send_message(client, link, text, user_id, account):
                 if status == '🟢':
                     await send(error=f'Спамблок: {account}', user_id=user_id)
                     return
+            except UnboundLocalError as e:
+                pass
             except Exception as e:
                 if status == '🟢':
-                    await send(error=f'Ошибка при вступлении в чат: {account}', user_id=user_id)
+                    await send(error=f'Ошибка при вступлении в чат: {e} \n\n {account}:{link}', user_id=user_id)
                     return
 
             amount = send_messages + 1
@@ -44,12 +47,36 @@ async def join_and_send_message(client, link, text, user_id, account):
 
             try:
                 await client.send_message(chat.id, text)
+
             except errors.FloodWait as e:
                 if status == '🟢':
                     await send(error=f'Спамблок: {account}', user_id=user_id)
                     return
+                
             except UnboundLocalError as e:
                 pass
+
+            except errors.SlowmodeWait as e:
+                if status == '🟢':
+                    await send(error=f'SLOW_MODE: \n\n {account}:{link}', user_id=user_id)
+                    return
+                
+            except errors.UserBannedInChannel as e:
+                if status == '🟢':
+                    await send(error=f'USER_BANNED_IN_CHANNEL: \n\n {account}:{link}', user_id=user_id)
+                    chats_link = await chats.get_chats(account)
+                    chats_link.remove(link)
+                    await chats.update_account_chats(account, chats_link)
+                    return
+                
+            except errors.PeerIdInvalid as e:
+                if status == '🟢':
+                    await send(error=f'Невозможно вступить в чат: \n\n {account}:{link}', user_id=user_id)
+                    chats_link = await chats.get_chats(account)
+                    chats_link.remove(link)
+                    await chats.update_account_chats(account, chats_link)
+                    return
+                 
             except Exception as e:
                 if status == '🟢':
                     await send(error=f'Ошибка при вступлении в чат: {e} \n\n {account}:{link}', user_id=user_id)
@@ -59,7 +86,7 @@ async def join_and_send_message(client, link, text, user_id, account):
             await users.update_messages(user_id, amount)
             print(f"Сообщение отправлено в чат {link}")
     except Exception as e:
-        print(f'Ошибка при отправке сообщения в чат {link}: {e}')
+        print(f'Ошибка при отправке сообщения в чат {link} на аккаунте {account}\n\n Ошибка:{e}')
 
 
 
@@ -101,7 +128,8 @@ async def spamming(client, user_id, text, account):
 async def main(account_file, user_id, text, account):
     status = (await users.user_profile(user_id))[8]
     try:
-        async with Client(account_file, API_ID, API_HASH, proxy=PROXY) as client:
+        proxy = get_random_proxy()
+        async with Client(account_file, API_ID, API_HASH, proxy=proxy) as client:
             await spamming(client, user_id, text, account)
 
     except errors.Unauthorized as e:
