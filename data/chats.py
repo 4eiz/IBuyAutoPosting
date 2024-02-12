@@ -50,6 +50,26 @@ async def add_account(max_id, user_id, account_name, chats):
                 print("Ошибка при закрытии соединения.", close_error)
 
 
+async def update_account_chats(account_name, new_chats):
+    db = None
+
+    try:
+        db = await aiosqlite.connect('data/base/base.db')
+        serialized_chats = pickle.dumps(new_chats)
+        update_query = "UPDATE accounts SET chats = ? WHERE account_name = ?;"
+        await db.execute(update_query, (serialized_chats, account_name))
+        await db.commit()
+        print(f"Список чатов для аккаунта {account_name} успешно обновлен.")
+
+    except aiosqlite.Error as error:
+        print("Не удалось обновить список чатов.", error)
+    finally:
+        if db:
+            try:
+                await db.close()
+            except aiosqlite.Error as close_error:
+                print("Ошибка при закрытии соединения.", close_error)
+
 
 async def get_chats(acc):
     db = await aiosqlite.connect('data/base/base.db')

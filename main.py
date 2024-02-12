@@ -9,9 +9,10 @@ from aiogram import Dispatcher
 
 from config import bot
 
-
-
 async def start():
+    # Настройка логгера для записи в файл
+    logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    
     dp = Dispatcher()
 
     dp.include_routers(
@@ -31,7 +32,6 @@ async def start():
         upload_account2.router,
     )
 
-    logging.basicConfig(level=logging.INFO)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
