@@ -2,15 +2,15 @@ from aiogram import Bot
 from data.admin import get_proxy
 
 
-API_TOKEN = '6708966085:AAH8DAOulSOhLHjn6rlL40_MZjcAKekWs9g'
-CRYPTO_TOKEN = '150011:AAUcnHTDjxTat2vo9LC9VUTLIXnPaSept7h'
+API_TOKEN = 'TOKEN_BOT'
+CRYPTO_TOKEN = 'TOKEN_CRYPTO'
 
-ADMIN = 6489729822
-CHANNEL_ID = -1002132546221
-CHANNEL_URL = 'https://t.me/MSTR_SERVICES'
+ADMIN = 'ADMIN_ID'
+CHANNEL_ID = 'CHANNEL_ID'
+CHANNEL_URL = 'CHANNEL_URL'
 
-API_ID = '28596942'
-API_HASH = '7033098f253c5266cc2311fc9a09fab9'
+API_ID = 'api_id'
+API_HASH = 'api_hash'
 
 
 def parse_proxy_string():
